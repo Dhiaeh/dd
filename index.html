@@ -518,6 +518,49 @@
             
             return isValid;
         }
+ 
     </script>
+    <script>
+function sendOrderWhatsApp() {
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+    let address = document.getElementById("address").value;
+    let product = document.getElementById("product").value;
+    let color = document.getElementById("color").value;
+    let size = document.getElementById("size").value;
+
+    let message = `مرحبًا، أود طلب:
+    - الاسم: ${name}
+    - رقم الهاتف: ${phone}
+    - العنوان: ${address}
+    - المنتج: ${product}
+    - اللون: ${color}
+    - المقاس: ${size}`;
+
+    let whatsappURL = `https://wa.me/0797774280?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, "_blank");
+}
+
+function sendOrderMessenger() {
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+    let address = document.getElementById("address").value;
+    let product = document.getElementById("product").value;
+    let color = document.getElementById("color").value;
+    let size = document.getElementById("size").value;
+
+    let message = `مرحبًا، أود طلب:
+    - الاسم: ${name}
+    - رقم الهاتف: ${phone}
+    - العنوان: ${address}
+    - المنتج: ${product}
+    - اللون: ${color}
+    - المقاس: ${size}`;
+
+    let messengerURL = `https://m.me/Dhiae Maa?ref=${encodeURIComponent(message)}`;
+    window.open(messengerURL, "_blank");
+}
+</script>
+
 </body>
 </html>
