@@ -6,7 +6,174 @@
     <title>متجر المستلزمات الطبية</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
-        /* Your existing CSS styles */
+        body {
+            font-family: 'Cairo', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 15px 0;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .cta-button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-block;
+            margin: 10px 0;
+        }
+        .cta-button:hover {
+            background-color: #2980b9;
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        .product-image {
+            height: 180px;
+            width: 100%;
+            background-size: cover;
+            background-position: center;
+        }
+        .product-info {
+            padding: 15px;
+        }
+        .product-price {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow-y: auto;
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 800px;
+            position: relative;
+        }
+        .close {
+            position: absolute;
+            left: 15px;
+            top: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .product-detail {
+            display: flex;
+            flex-direction: column;
+        }
+        @media (min-width: 768px) {
+            .product-detail {
+                flex-direction: row;
+            }
+        }
+        .product-detail-image {
+            flex: 1;
+            min-height: 250px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        @media (min-width: 768px) {
+            .product-detail-image {
+                margin-bottom: 0;
+                margin-left: 15px;
+            }
+        }
+        .color-options, .size-options {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .color-option {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .color-option.active {
+            border-color: #333;
+        }
+        .size-option {
+            padding: 5px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .size-option.active {
+            background-color: #3498db;
+            color: white;
+        }
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin: 20px 0;
+            display: none;
+        }
+        form input, form select {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+        footer {
+            text-align: center;
+            padding: 15px;
+            background-color: #2c3e50;
+            color: white;
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
@@ -232,7 +399,6 @@
             document.getElementById('purchase-form').addEventListener('submit', function(e) {
                 e.preventDefault();
                 if (validateForm()) {
-                    sendOrderWhatsApp();
                     successModal.style.display = 'block';
                 }
             });
@@ -352,27 +518,54 @@
             
             return isValid;
         }
-
-        // Send order details via WhatsApp
-        function sendOrderWhatsApp() {
-            const fullname = document.getElementById('fullname').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const wilaya = document.getElementById('wilaya').value;
-            const address = document.getElementById('address').value.trim();
-            const orderSummary = document.getElementById('order-summary').textContent;
-            const totalPrice = document.getElementById('total-price').textContent;
-
-            const message = `طلب جديد:
-الاسم: ${fullname}
-رقم الهاتف: ${phone}
-الولاية: ${wilaya}
-العنوان: ${address}
-${orderSummary}
-${totalPrice}`;
-
-            const whatsappURL = `https://wa.me/213797774280?text=${encodeURIComponent(message)}`;
-            window.open(whatsappURL, '_blank');
-        }
+ 
     </script>
+    <script>
+function sendOrderWhatsApp() {
+    let name = document.getElementById("name").value;
+    let phone = document.getElementById("phone").value;
+    let address = document.getElementById("address").value;
+    let product = document.getElementById("product").value;
+    let color = document.getElementById("color").value;
+    let size = document.getElementById("size").value;
+
+    let message = `مرحبًا، أود طلب:
+    - الاسم: ${name}
+    - رقم الهاتف: ${phone}
+    - العنوان: ${address}
+    - المنتج: ${product}
+    - اللون: ${color}
+    - المقاس: ${size}`;
+
+    let whatsappURL = `https://wa.me/0797774280?text=${encodeURIComponent(message)}`;
+    window.open(whatsappURL, "_blank");
+}
+
+document.getElementById('purchase-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (validateForm()) {
+        const name = document.getElementById('fullname').value;
+        const phone = document.getElementById('phone').value;
+        const wilaya = document.getElementById('wilaya').value;
+        const address = document.getElementById('address').value;
+        const orderSummary = document.getElementById('order-summary').textContent;
+        const totalPrice = document.getElementById('total-price').textContent;
+
+        // WhatsApp number (Replace with your own number)
+        const whatsappNumber = "212600000000"; // Example: 212 for Morocco, 971 for UAE, etc.
+
+        // Create the WhatsApp message
+        const message = `طلب جديد:%0A👤 الاسم: ${name}%0A📞 الهاتف: ${phone}%0A📍 الولاية: ${wilaya}%0A🏠 العنوان: ${address}%0A🛒 الطلب: ${orderSummary}%0A💰 ${totalPrice}`;
+
+        // Generate the WhatsApp URL
+        const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
+
+        // Redirect to WhatsApp
+        window.location.href = whatsappURL;
+    }
+});
+
+       </script>
+
 </body>
 </html>
